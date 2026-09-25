@@ -1,17 +1,31 @@
 package Bank;
 
+import java.util.*;
+
 public class Account {
 	private String accountNumber;
 	private String name;
 	private String password;
+	private String pin;
 	private double balance;
 	
-	Account(String accountNumber,String name,String password,double balance){
+	Account(String accountNumber,String name,String password,String pin, double balance){
 		this.setAccountNumber(accountNumber);
 		this.setName(name);
 		this.setPassword(password);
 		this.setBalance(balance);
+		this.setPin(pin);
 	}
+	
+	private List<Transaction> history = new ArrayList<>();
+	
+	public List<Transaction> getTransaction(){
+		return history;
+	}
+	
+	public void addTransaction(Transaction tx) {
+        this.history.add(tx);
+    }
 
 	public String getAccountNumber() {
 		return accountNumber;
@@ -43,6 +57,14 @@ public class Account {
 
 	public void setBalance(double balance) {
 		this.balance = balance;
+	}
+
+	public String getPin() {
+		return pin;
+	}
+
+	public void setPin(String pin) {
+		this.pin = pin;
 	}
 	
 	

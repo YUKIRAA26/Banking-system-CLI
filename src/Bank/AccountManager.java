@@ -7,7 +7,8 @@ public class AccountManager {
 	final private static Map<String, Account> info = new HashMap<>();
 	final private static Predicate<String> numberLenghtChecker = s -> s.length() == 11;
 	final private static Predicate<String> passwordLengthChecker = s -> s.length() >= 5;
-	
+	final private static Predicate<String> pinLengthChecker = s -> s.length() == 4;
+ 	
 	public static void createAccount() {
 		String number;
 		while(true) {
@@ -35,7 +36,19 @@ public class AccountManager {
 			}
 			break;
 		}
-		info.put(number, new Account(number, name , password, 0.0));
+		
+		String pin;
+		while(true) {
+			pin = Exceptions.StringException("Enter pin (must be only 4): ");
+			if(!pinLengthChecker.test(pin)) {
+				System.out.println("Pin must be only 4 number only! ");
+				continue;
+			}
+			break;
+		}
+		
+		info.put(number, new Account(number, name , password,pin, 0.0));
+		AccountData.saveAccount(info);
 		System.out.println("Succesfully Created Account! ");
 	}
 	
@@ -56,9 +69,26 @@ public class AccountManager {
 				System.out.println("Attempt remaining: " + attempt);
 				continue;
 			}
-			
+			attempt = 5;
 			break;
 		}
+		if(attempt == 0) {
+			System.out.println("Please come back later! ");
+			return null;
+		}
+		String pin;
+		while(attempt > 0) {
+			pin = Exceptions.StringException("Enter pin: ");
+			
+			if(!pin.equals(info.get(number).getPin())) {
+				System.out.println("Incorrect Pin! ");
+				--attempt;
+				System.out.println("Attempt remaining: " + attempt);
+				continue;
+			}
+			break;
+		}
+		
 		if(attempt == 0) {
 			System.out.println("Please come back later! ");
 			return null;

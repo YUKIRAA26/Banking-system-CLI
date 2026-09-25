@@ -1,19 +1,19 @@
 package Bank;
-import java.util.*;	
 
 public class Main {
-	private final static Scanner scanner = new Scanner(System.in);
-	private final static AccountManager accountManager = new AccountManager();
+
 
 	public static void main(String[] args) {
+		
+		AccountData.loadAccounts();
 		Account isLogged = null;
 		while(isLogged == null) {
 			accountMenu();
 			String choice = Exceptions.StringException("Enter choice: ");
 			
 			switch(choice) {
-				case "1" -> accountManager.createAccount();
-				case "2" -> isLogged = accountManager.loginAccount();
+				case "1" -> AccountManager.createAccount();
+				case "2" -> isLogged = AccountManager.loginAccount();
 				case "3" -> {
 					System.out.println("Thank you! ");
 					return;
@@ -23,11 +23,12 @@ public class Main {
 			
 	
 			if(isLogged != null) {
+				SaveTransaction.loadTransaction(isLogged);
 				while(true) {
 					bankDisplayMenu(isLogged.getAccountNumber());
 					String choice1 = Exceptions.StringException("Enter choice: ");
 					
-					if(choice1.equals("5")) {
+					if(choice1.equals("6")) {
 						System.out.println("LOGGED OUT! ");
 						isLogged = null;
 						break;
@@ -37,7 +38,8 @@ public class Main {
 						case "1" -> BankManager.deposit(isLogged.getAccountNumber());
 						case "2" -> BankManager.withdraw(isLogged.getAccountNumber());
 						case "3" -> BankManager.checkBalance(isLogged.getAccountNumber());
-						case "4" -> BankManager.transfer(accountManager, isLogged.getAccountNumber());
+						case "4" -> BankManager.transfer(isLogged.getAccountNumber());
+						case "5" -> BankManager.transactionHistory(isLogged);
 					}
 				}
 			}
@@ -54,12 +56,13 @@ public class Main {
 	
 	private static void bankDisplayMenu(String number) {
 		System.out.println("===== ACCOUNT =====");
-		System.out.println("Welcome " + accountManager.infos().get(number).getName());
+		System.out.println("Welcome " + AccountManager.infos().get(number).getName());
 		System.out.println("1. Deposit");
 		System.out.println("2. Withdraw");
 		System.out.println("3. Check Balance");
 		System.out.println("4. Transfer");
-		System.out.println("5. Log out");
+		System.out.println("5. Transaction History");
+		System.out.println("6. Log out");
 	}
 
 }
